@@ -34,8 +34,8 @@ public class UserController {
         }
     }
 
-    public boolean validatePassword(String password){
-        String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,10}$";
-        return password.matches(regex);
+    private static boolean validatePassword(String password) {
+        return password.length() >= 8 && password.length() <= 10;
     }
+
 }

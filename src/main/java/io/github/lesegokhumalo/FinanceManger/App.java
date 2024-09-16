@@ -91,9 +91,7 @@ public class App {
                         formPanel.setVisible(false);
                         actionPanel.setVisible(false);
                     } else {
-                        statusLabel.setText("<html>Invalid password! Must contain:<br>" +
-                                "- Uppercase, Lowercase, Number, Special Character<br>" +
-                                "- 8-10 characters</html>");
+                        statusLabel.setText("Invalid password! Password must be between 8-10 characters.");
                     }
                 }
 
@@ -122,10 +120,9 @@ public class App {
         });
     }
 
-    // Password validation method
+    // Simplified password validation method (just length check)
     private static boolean validatePassword(String password) {
-        // Define the regular expression for password validation
-        String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!]).{8,10}$";
-        return password.matches(regex);
+        // Check if the password length is between 8 and 10 characters
+        return password.length() >= 8 && password.length() <= 10;
     }
 }
