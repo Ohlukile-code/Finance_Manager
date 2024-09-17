@@ -1,25 +1,42 @@
 package io.github.lesegokhumalo.FinanceManger;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Budget {
-    private String id;
-    private double income;
+    private double totalBudget;
+    private double savings;
     private double expenses;
-    private List<String> categories = new ArrayList<>();
 
-    public Budget(String id, double income, double expenses) {
-        this.id = id;
-        this.income = income;
+    public Budget(double totalBudget, double savings, double expenses) {
+        this.totalBudget = totalBudget;
+        this.savings = savings;
         this.expenses = expenses;
     }
 
-    public void addCategory(String category) {
-        categories.add(category);
+    public double getTotalBudget() {
+        return totalBudget;
     }
 
-    public String getId() {
-        return id;
+    public void setTotalBudget(double totalBudget) {
+        this.totalBudget = totalBudget;
+    }
+
+    public double getSavings() {
+        return savings;
+    }
+
+    public void setSavings(double savings) {
+        this.savings = savings;
+    }
+
+    public double getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(double expenses) {
+        this.expenses = expenses;
+    }
+
+    @Override
+    public String toString() {
+        return "Budget [Total=" + totalBudget + ", Savings=" + savings + ", Expenses=" + expenses + "]";
     }
 }
