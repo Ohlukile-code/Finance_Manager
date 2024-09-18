@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class App {
 
@@ -45,7 +46,9 @@ public class App {
     }
 
     // Method to launch the UI
-    public static void launchApp() {
+    public static void launchApp() throws SQLException {
+
+        UserController controller = new UserController(DatabaseConnection.getConnection());
         // Ensure the UI is launched on the Event Dispatch Thread (EDT)
         SwingUtilities.invokeLater(() -> {
             // Create the main frame
@@ -134,10 +137,14 @@ public class App {
                 String username = usernameField.getText();
                 String email = emailField.getText();
                 String password = new String(passwordField.getPassword());
-
                 // Handle registration
                 if (statusLabel.getText().contains("Registration")) {
                     if (validatePassword(password)) {
+                        try {
+                            controller.registerUser(new User(username,email,password, new Profile(0,0)));
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         statusLabel.setText("Registration Successful! Please log in.");
                         formPanel.setVisible(false);
                         actionPanel.setVisible(false);
@@ -152,6 +159,11 @@ public class App {
                     if (username.isEmpty() || password.isEmpty()) {
                         statusLabel.setText("Please enter both username and password.");
                     } else {
+                        try {
+                            controller.loginUser(username,password);
+                        } catch (SQLException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         statusLabel.setText("Login Successful!");
                         formPanel.setVisible(false);
                         actionPanel.setVisible(false);

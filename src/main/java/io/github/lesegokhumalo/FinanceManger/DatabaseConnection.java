@@ -12,7 +12,7 @@ public class DatabaseConnection {
         if (connection == null) {
             try {
                 // Connect to SQLite (or use MySQL/PostgreSQL connection string)
-                String url = "jdbc:sqlite:finance_manager.db";
+                String url = "jdbc:sqlite:/home/wethinkcode/PersonalProject/Personal5/src/main/resources/finance_manager.db";
                 connection = DriverManager.getConnection(url);
                 System.out.println("Connected to database.");
             } catch (SQLException e) {

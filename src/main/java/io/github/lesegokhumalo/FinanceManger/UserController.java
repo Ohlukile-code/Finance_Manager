@@ -1,25 +1,47 @@
 package io.github.lesegokhumalo.FinanceManger;
 
 import io.javalin.http.Context;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
+import java.sql.*;
 
 public class UserController {
 
     private Connection dbConnection;
 
-    public UserController(Connection dbConnection) {
+    public UserController(Connection dbConnection) throws SQLException {
         this.dbConnection = dbConnection;
+        initialize();
     }
 
-    public void registerUser(Context ctx) throws SQLException {
-        String username = ctx.formParam("username");
-        String email = ctx.formParam("email");
-        String password = ctx.formParam("password");
-        double income = Double.parseDouble(ctx.formParam("income"));
-        double budget = Double.parseDouble(ctx.formParam("budget"));
+    // Method to initialize the database tables if they don't exist
+    public void initialize() throws SQLException {
+        String createUsersTable = "CREATE TABLE IF NOT EXISTS users (" +
+                "id SERIAL PRIMARY KEY, " +
+                "username VARCHAR(255) UNIQUE NOT NULL, " +
+                "email VARCHAR(255) UNIQUE NOT NULL, " +
+                "password VARCHAR(255) NOT NULL" +
+                ");";
+
+        String createProfilesTable = "CREATE TABLE IF NOT EXISTS profiles (" +
+                "id SERIAL PRIMARY KEY, " +
+                "username VARCHAR(255) NOT NULL, " +
+                "income DOUBLE PRECISION, " +
+                "budget DOUBLE PRECISION, " +
+                "FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE" +
+                ");";
+
+        try (Statement stmt = dbConnection.createStatement()) {
+            stmt.execute(createUsersTable);
+            stmt.execute(createProfilesTable);
+        }
+    }
+
+    public void registerUser(User user) throws SQLException {
+        String username = user.getUsername();
+        String email = user.getEmail();
+        String password = user.getPassword();
+        double income = user.getProfile().getIncome();
+        double budget = user.getProfile().getBudget();
 
         if (validatePassword(password)) {
             String insertUserQuery = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
@@ -40,17 +62,14 @@ public class UserController {
                 profileStmt.setDouble(3, budget);
                 profileStmt.executeUpdate();
 
-                ctx.status(201).result("User and profile registered successfully.");
+//                ctx.status(201).result("User and profile registered successfully.");
             }
         } else {
-            ctx.status(400).result("Invalid password.");
+//            ctx.status(400).result("Invalid password.");
         }
     }
 
-    public void loginUser(Context ctx) throws SQLException {
-        String username = ctx.formParam("username");
-        String password = ctx.formParam("password");
-
+    public void loginUser(String username, String password) throws SQLException {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
 
         try (PreparedStatement stmt = dbConnection.prepareStatement(query)) {
@@ -59,9 +78,9 @@ public class UserController {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                ctx.status(200).result("Login successful.");
+                System.out.println("Login successful.");
             } else {
-                ctx.status(401).result("Invalid credentials.");
+                System.out.println("Invalid credentials.");
             }
         }
     }
