@@ -1,11 +1,13 @@
 package io.github.lesegokhumalo.FinanceManger.ui;
 
+import io.github.lesegokhumalo.FinanceManger.User;
 import io.github.lesegokhumalo.FinanceManger.UserController;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class RegisterScreen {
 
@@ -43,6 +45,11 @@ public class RegisterScreen {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
                 // Assume registration logic here
+                try {
+                    controller.registerUser(new User(username, email, password));
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
+                }
                 JOptionPane.showMessageDialog(null, "Registration Successful! Please log in.");
                 app.showLoginScreen();  // Navigate to login screen after registration
             }

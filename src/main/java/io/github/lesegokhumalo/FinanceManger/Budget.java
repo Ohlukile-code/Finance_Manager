@@ -1,42 +1,68 @@
 package io.github.lesegokhumalo.FinanceManger;
 
 public class Budget {
-    private double totalBudget;
-    private double savings;
-    private double expenses;
 
-    public Budget(double totalBudget, double savings, double expenses) {
-        this.totalBudget = totalBudget;
-        this.savings = savings;
-        this.expenses = expenses;
+    private String payDay;
+    private double income;
+    private double livingCosts;
+    private double debt;
+    private double savingsInvestments;
+    private double insurance;
+
+    public Budget(String payDay, double income, double livingCosts, double debt, double savingsInvestments, double insurance) {
+        this.payDay = payDay;
+        this.income = income;
+        this.livingCosts = livingCosts;
+        this.debt = debt;
+        this.savingsInvestments = savingsInvestments;
+        this.insurance = insurance;
     }
 
-    public double getTotalBudget() {
-        return totalBudget;
+    public String getPayDay() {
+        return payDay;
     }
 
-    public void setTotalBudget(double totalBudget) {
-        this.totalBudget = totalBudget;
+    public void setPayDay(String payDay) {
+        this.payDay = payDay;
     }
 
-    public double getSavings() {
-        return savings;
+    public double getIncome() {
+        return income;
     }
 
-    public void setSavings(double savings) {
-        this.savings = savings;
+    public void setIncome(double income) {
+        this.income = income;
     }
 
-    public double getExpenses() {
-        return expenses;
+    public double getLivingCosts() {
+        return livingCosts;
     }
 
-    public void setExpenses(double expenses) {
-        this.expenses = expenses;
+    public void setLivingCosts(double livingCosts) {
+        this.livingCosts = livingCosts;
     }
 
-    @Override
-    public String toString() {
-        return "Budget [Total=" + totalBudget + ", Savings=" + savings + ", Expenses=" + expenses + "]";
+    public double getDebt() {
+        return debt;
+    }
+
+    public void setDebt(double debt) {
+        this.debt = debt;
+    }
+
+    public double getSavingsInvestments() {
+        return savingsInvestments;
+    }
+
+    public void setSavingsInvestments(double savingsInvestments) {
+        this.savingsInvestments = savingsInvestments;
+    }
+
+    public double getInsurance() {
+        return insurance;
+    }
+
+    public void setInsurance(double insurance) {
+        this.insurance = insurance;
     }
 }

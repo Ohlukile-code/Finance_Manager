@@ -45,7 +45,7 @@ public class App {
 
     public void showProfileScreen() {
         if (isLoggedIn) {
-            ProfileScreen profileScreen = new ProfileScreen(this, controller);
+            BudgetMenuScreen profileScreen = new BudgetMenuScreen(controller);
             frame.setContentPane(profileScreen.getPanel());
             frame.revalidate();
         } else {

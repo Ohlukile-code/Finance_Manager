@@ -1,5 +1,7 @@
 package io.github.lesegokhumalo.FinanceManger;
 
+import io.github.lesegokhumalo.FinanceManger.Budget;
+import io.github.lesegokhumalo.FinanceManger.User;
 import io.javalin.http.Context;
 
 import java.sql.*;
@@ -22,34 +24,37 @@ public class UserController {
                 "password VARCHAR(255) NOT NULL" +
                 ");";
 
-        String createProfilesTable = "CREATE TABLE IF NOT EXISTS profiles (" +
+        String createBudgetsTable = "CREATE TABLE IF NOT EXISTS budgets (" +
                 "id SERIAL PRIMARY KEY, " +
                 "username VARCHAR(255) NOT NULL, " +
+                "pay_day VARCHAR(255), " +
                 "income DOUBLE PRECISION, " +
-                "budget DOUBLE PRECISION, " +
+                "living_costs DOUBLE PRECISION, " +
+                "debt DOUBLE PRECISION, " +
+                "savings_investments DOUBLE PRECISION, " +
+                "insurance DOUBLE PRECISION, " +
                 "FOREIGN KEY (username) REFERENCES users(username) ON DELETE CASCADE" +
                 ");";
 
         try (Statement stmt = dbConnection.createStatement()) {
             stmt.execute(createUsersTable);
-            stmt.execute(createProfilesTable);
+            stmt.execute(createBudgetsTable);
         }
     }
 
-
+    // Method to register a user and their budget
     public void registerUser(User user) throws SQLException {
         String username = user.getUsername();
         String email = user.getEmail();
         String password = user.getPassword();
-        double income = user.getProfile().getIncome();
-        double budget = user.getProfile().getBudget();
+        Budget budget = user.getBudget();
 
         if (validatePassword(password)) {
             String insertUserQuery = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
-            String insertProfileQuery = "INSERT INTO profiles (username, income, budget) VALUES (?, ?, ?)";
+            String insertBudgetQuery = "INSERT INTO budgets (username, pay_day, income, living_costs, debt, savings_investments, insurance) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             try (PreparedStatement userStmt = dbConnection.prepareStatement(insertUserQuery);
-                 PreparedStatement profileStmt = dbConnection.prepareStatement(insertProfileQuery)) {
+                 PreparedStatement budgetStmt = dbConnection.prepareStatement(insertBudgetQuery)) {
 
                 // Inserting user details
                 userStmt.setString(1, username);
@@ -57,20 +62,25 @@ public class UserController {
                 userStmt.setString(3, password);
                 userStmt.executeUpdate();
 
-                // Inserting profile details
-                profileStmt.setString(1, username);
-                profileStmt.setDouble(2, income);
-                profileStmt.setDouble(3, budget);
-                profileStmt.executeUpdate();
+                // Inserting budget details
+                budgetStmt.setString(1, username);
+                budgetStmt.setString(2, budget.getPayDay());
+                budgetStmt.setDouble(3, budget.getIncome());
+                budgetStmt.setDouble(4, budget.getLivingCosts());
+                budgetStmt.setDouble(5, budget.getDebt());
+                budgetStmt.setDouble(6, budget.getSavingsInvestments());
+                budgetStmt.setDouble(7, budget.getInsurance());
+                budgetStmt.executeUpdate();
 
-//                ctx.status(201).result("User and profile registered successfully.");
+//                ctx.status(201).result("User and budget registered successfully.");
             }
         } else {
 //            ctx.status(400).result("Invalid password.");
         }
     }
 
-    public void loginUser(String username, String password) throws SQLException {
+    // Method to log in a user
+    public boolean loginUser(String username, String password) throws SQLException {
         String query = "SELECT * FROM users WHERE username = ? AND password = ?";
 
         try (PreparedStatement stmt = dbConnection.prepareStatement(query)) {
@@ -80,8 +90,10 @@ public class UserController {
 
             if (rs.next()) {
                 System.out.println("Login successful.");
+                return true;
             } else {
                 System.out.println("Invalid credentials.");
+                return false;
             }
         }
     }

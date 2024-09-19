@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class LoginScreen {
 
@@ -39,12 +40,16 @@ public class LoginScreen {
                 String loginInput = loginField.getText();
                 String password = new String(passwordField.getPassword());
                 // Assume valid credentials for now
-                if (!loginInput.isEmpty() && !password.isEmpty()) {
-                    app.setLoginStatus(true);  // Mark user as logged in
-                    JOptionPane.showMessageDialog(null, "Login Successful!");
-                    app.showProfileScreen();  // Navigate to Profile screen on successful login
-                } else {
-                    JOptionPane.showMessageDialog(null, "Invalid credentials!");
+                try {
+                    if (!loginInput.isEmpty() && !password.isEmpty() && controller.loginUser(loginInput, password)) {
+                        app.setLoginStatus(true);  // Mark user as logged in
+                        JOptionPane.showMessageDialog(null, "Login Successful!");
+                        app.showProfileScreen();  // Navigate to Profile screen on successful login
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid credentials!");
+                    }
+                } catch (SQLException ex) {
+                    throw new RuntimeException(ex);
                 }
             }
         });
