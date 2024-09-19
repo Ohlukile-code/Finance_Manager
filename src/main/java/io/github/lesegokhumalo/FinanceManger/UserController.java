@@ -36,6 +36,7 @@ public class UserController {
         }
     }
 
+
     public void registerUser(User user) throws SQLException {
         String username = user.getUsername();
         String email = user.getEmail();
